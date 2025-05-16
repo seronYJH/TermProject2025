@@ -9,7 +9,7 @@ public class ServerMain{
                     Socket incoming = s.accept(); // 클라이언트와 연결된 소켓.
                     System.out.println("Spawning" + i);
                     new ThreadedEchoHandler(incoming,i).start();
-                    }
+                }
         } catch (Exception e){
             System.out.println(e);
         }
