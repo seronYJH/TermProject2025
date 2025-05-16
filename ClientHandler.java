@@ -8,6 +8,7 @@ public class ClientHandler extends Thread{
     private QuizManager quizManager;
 
 
+
     public ThreadedEchoHandler(Socket i, int c){
         this.incoming = i;
         this.counter = c;
