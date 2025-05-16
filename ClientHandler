@@ -1,1 +1,39 @@
+import java.io.*;
+import java.net.*;
 
+public class ClientHandler extends Thread{
+    private Socket incoming;
+    private int counter;
+
+    public ThreadedEchoHandler(Socket i, int c){
+        this.incoming = i;
+        this.counter = c;
+    }
+
+    public void run(){
+        try{
+            PrintWriter out = new PrintWriter(incoming.getOutputStream(), true);
+             // 외부로 보넬 데이터.
+
+            out.println("Hello! Enter BYE to Exit");
+
+            BufferedReader in = new BufferedReader(new InputStreamReader(incoming.getInputStream()));
+             // 정보가 들어오기 전까지 대기. Blocking 함수.
+
+            boolean done = false;
+
+            while(!done){
+                String str = in.readLine();
+                if (str == null){
+                    done = true;
+                } else{
+                    out.println("Echo (" + counter + "): " + str);
+                    if(str.trim().equals("BYE")) done = true;
+                }
+            }
+            incoming.close();
+        } catch (Exception e){
+            System.out.println(e);
+        }
+    }
+}
