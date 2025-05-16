@@ -1,1 +1,38 @@
+public class QuizManager {
+    private Quiz currentQuiz;         // 현재 문제
+    private String correctAnswer;     // 현재 문제의 정답
+    private int score;                // 유저의 점수
 
+    public QuizManager() {
+        this.score = 0;
+        loadNextQuiz();
+    }
+
+    // 다음 문제를 불러오고 현재 문제/정답을 갱신
+    public void loadNextQuiz() {
+        this.currentQuiz = QuizPool.getRandomQuiz();
+        this.correctAnswer = currentQuiz.getAnswer(); // Quiz 객체에서 정답 가져오기
+    }
+
+    // 유저가 입력한 정답을 채점
+     //return 값은 추후 GUI에서 결과 출력을 위한 값. (정답/오답)
+    public boolean checkAnswer(String userAnswer) {
+        boolean isCorrect = correctAnswer.trim().equalsIgnoreCase(userAnswer.trim());
+        if (isCorrect) {
+            score += 10;  // 맞았으면 +10
+        } else {
+            score -= 5;   // 틀렸으면 -5
+        }
+        return isCorrect;
+    }
+
+    // 현재 점수 반환
+    public int getScore() {
+        return score;
+    }
+
+    // 현재 문제 반환 (GUI에 표시용)
+    public Quiz getCurrentQuiz() {
+        return currentQuiz;
+    }
+}
