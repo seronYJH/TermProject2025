@@ -14,16 +14,34 @@ public class GameManager{
     public static GameManager getInstance() {
         return instance;
          // 외부에서 인스턴스를 참조하는 유일한 방법
+         // Thread가 오직 하나의 공통된 객체만 사용하도록 하기 위함.
     }
 
-    private List<ClientHandler> players = new ArrayList<>();
-    private Map<ClientHandler, Integer> scores = new HashMap<>();
-    private boolean gameStarted = false;
-
-    public PlayGame(){
+    //게임을 시작할 메서드
+    public PlayGame(ClientHandler handler){
+        // 게임시작 버튼 누를 경우 작동할 예정
+        showInGameJPanel();
 
     }
 
+    //로그인할 때 사용할 메서드
+    public Login(ClientHandler handler){
+        // 로그인 버튼 누를 경우 작동할 예정
+        showMainJPanel();
+    }
+
+    //환경설정할 때 사용할 메서드
+    public Setting(ClientHandler handler){
+        // 환경설정 버튼 누를 경우 작동할 예정
+        showSettingJPanel();
+    }
+
+    //다른 유저들이 대기하는 방 메서드
+    public WaitingRoom(ClientHandler handler){
+        shoeWaittingRoomJPanel();
+    }
+
+    //
 
 
 
