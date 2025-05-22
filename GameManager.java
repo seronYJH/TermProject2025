@@ -17,31 +17,26 @@ public class GameManager{
          // Thread가 오직 하나의 공통된 객체만 사용하도록 하기 위함.
     }
 
-    //게임을 시작할 메서드
+    // 전체 로직을 담당할 메서드
     public PlayGame(ClientHandler handler){
-        // 게임시작 버튼 누를 경우 작동할 예정
-        showInGameJPanel();
+        handler.out.println("COMMAND:MAINPANEL:메인화면");
+
+
 
     }
 
-    //로그인할 때 사용할 메서드
-    public Login(ClientHandler handler){
-        // 로그인 버튼 누를 경우 작동할 예정
-        showMainJPanel();
+    public String HandleShop(){
+        return "SHOP:ITEMS=item1;100,item2;200,item3;300";
     }
 
-    //환경설정할 때 사용할 메서드
-    public Setting(ClientHandler handler){
-        // 환경설정 버튼 누를 경우 작동할 예정
-        showSettingJPanel();
+    public String HandleRank(){
+        String resutl = PlayerManager.getRankingInfo();
+        return result;
     }
 
-    //다른 유저들이 대기하는 방 메서드
-    public WaitingRoom(ClientHandler handler){
-        shoeWaittingRoomJPanel();
-    }
+    public String HandleRoom(){
 
-    //
+    }
 
 
 
