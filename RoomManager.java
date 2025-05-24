@@ -31,11 +31,12 @@ public class RoomManager {
         Room room = new Room(roomId, maxPlayers);
         room.addPlayer(client);
         rooms.put(roomId, room);
+        //fffgg
 
         // 클라이언트에게 방 생성 완료 및 방 정보 전달 (여기선 간단히 출력 예시)
         client.getHandler().getOut.println("ROOM:CREATED:" + roomId);
         updateRoomListForAllClients();
-    }
+    };;;;;
 
     // 방 참가 메서드 (data -> roomId)
     public static synchronized String joinRoom(Player client, String roomId) {
