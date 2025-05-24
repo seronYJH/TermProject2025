@@ -5,17 +5,19 @@ public class ClientHandler extends Thread{
     private Socket incoming; // 클라이언트 소켓.
     private int counter; // 클라이언트 구분용 변수.
     private GameManager gameManager;
-    private QuizManager quizManager;
     private PrintWriter out;
     // 외부로 정보를 보낼 변수.
-    Private BufferedReader in;
-    // 외부에서 정보를 받을 변수.
+    private BufferedReader in;
+    //
+    String message; // 외부의 정보를 저장할 변수.
+    String[] parts; // 외부의 정보를 분할하여 담아둘 배열.
+    String sendMessage; //외부로 보낼 정보를 저장할 변수.
+
 
     public ClientHandler(Socket i, int c){
         this.incoming = i;
         this.counter = c;
         this.gameManager = GameManager.getInstance(); // 객체 참조
-        this.quizManager = new QuizManager(); // 각 클라이언트에 사용될 전담 비서.
         try {
             this.out = new PrintWriter(incoming.getOutputStream(), true);
             this.in = new BufferedReader(new InputStreamReader(incoming.getInputStream()));
@@ -23,57 +25,87 @@ public class ClientHandler extends Thread{
             System.out.println("스트림 초기화 실패");
         }
     }
-    
-    public QuizManager getQuizManager() {
-            return quizManager;
+
+    public PrintWriter getOut() {
+        return out;
     }
 
     public void run(){
         try{
-            handler.out.println("COMMAND:MAINPANEL:메인화면");
+            out.println("COMMAND:MAINPANEL:메인화면");
             while(true){
-                String message = in.readLine(); // 입력값 받기
-                String[] parts = message.split(":", 3); // :을 기준으로 입력값 등분
+                message = in.readLine(); // 입력값 받기
+                parts = message.split(":", 3); // :을 기준으로 입력값 등분
                 if (parts.length < 3) {
-                    handler.out.println("ERROR: Invalid message format.");
+                    out.println("ERROR: Invalid message format.");
                     continue;
                 }
-                String command = parts[1];  //구분용 명령.
+                String mainCommand = parts[1];  //구분용 명령.
                 String subCommand = parts[2]; // 구체적 명령.
-                switch (command){
+                switch (mainCommand){
+                    // 메인화면, 선택화면은 클라이언트가 알아서 실행하도록 함.
+                    case "LOGIN":
+                        player = new Player(username, this);
+                        sendMessage =
+                        break;
+
+                    case "SINGLE":
+                        // 개인 코인만 서버에서 받고 나머지는 클라이언트가 함.
+                        sendMessage = gameManager.findCoin();
+                        break;
+
+                    case "MULTI":
+                        // 생성된 대기방들 표시, 상점아이콘, 랭킹아이콘,
+                        sendMessage = gameManager.handleMulti(subCommand);
+                        break;
+
                     case "SHOP":
-                        GameManager.HandleShop();
+                        sendMessage = gameManager.handleShop(subCommand);
                         //상점 최신 업데이트
                         break;
+
                     case "RANK":
-                        GameManager.HandleRank();
+                        sendMessage = gameManager.handleRank(subCommand);
                         // 랭킹 최신 업데이트
                         break;
-                    case "MAKE_ROOM":
-                        GameManager.HandleRoom();
-                        // 대기방을 생성하는 코드
-                        break;
-                    case "FIND_ROOM":
-                        // 대기방 클릭시 들어가는 코드
-                        break;
-                    case "CATEGORY":
-                        // 준비완료 전 카테고리 선택 코드.
-                        break;
-                    case "PLAY_GAME":
-                        // 준비완료 누를시 게임 시작, QuizManager사용
+
+                    case "ROOM":
+                        handleRoom(subCommand);
+
                         break;
                     default:
                         break;
                 }
+                out.println(sendMessage);
                 if (command.equals("EXIT")) {
-                    handler.out.println("BYE");
+                    out.println("BYE");
                     break;
                 }
-            }
             }
             incoming.close();
         } catch (Exception e){
             out.println("클라이언트 연결 실패. 재접속해주세요.");
+        }
+    }
+
+    // 대기방 관련 명령 처리 메서드.
+    void handleRoom(String subCommand, String data) {
+        switch (subCommand) {
+            case "CREATE": // 생성 버튼
+                RoomManager.createRoom(client, Integer.parseInt(data));
+                break;
+            case "JOIN": // 참가 버튼
+                RoomManager.joinRoom(client, data);
+                break;
+            case "LEAVE": // 나가기 버튼
+                RoomManager.leaveRoom(client, data);
+                break;
+            case "READY": // 준비완료 버튼
+                RoomManager.setReady(client, data, true); // 모두가 ready(true)이면 5초뒤 자동으로 게임시작.
+                break;
+            case "UNREADY": // 준비취소 버튼
+                RoomManager.setReady(client, data, false);
+                break;
         }
     }
 }
