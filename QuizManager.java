@@ -1,16 +1,15 @@
 public class QuizManager {
-    private List<Quiz> quizzes;  // 문제 리스트 (Quiz는 문제 클래스)
-    private String[] answer; //문제 리스트에 대한 답 리스트.
-    private int currentIndex;
+    private List<Quiz> currentGameQuizList;
+    private currentIndex = 0;
 
-    public QuizManager(List<Quiz> quizzes) {
-        this.quizzes = quizzes;
-        this.currentIndex = 0;
+    public QuizManager(QuizRepository repo) {
+        // 게임 시작할 때 문제지를 받아서
+        this.currentGameQuizList = new ArrayList<>(repo.getQuizList());
     }
 
-    public Quiz getCurrentQuiz() {
         if (currentIndex < quizzes.size()) {
-            return quizzes.get(currentIndex);
+    public Quiz getCurrentQuiz() {
+            return currentGameQuizList.get(currentIndex);
         }
         return null;  // 문제 다 끝남
     }
