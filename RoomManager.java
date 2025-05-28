@@ -26,17 +26,16 @@ public class RoomManager {
 
     // 방 생성 메서드 (client -> Player 객체, data -> 방 최대 인원수)
     public static synchronized void createRoom(Player client, int maxPlayers) {
-        // 고유한 방 ID 생성 (UUID 사용 예시)
+        // 고유한 방 ID 생성 (UUID 사용)
         String roomId = UUID.randomUUID().toString();
         Room room = new Room(roomId, maxPlayers);
         room.addPlayer(client);
         rooms.put(roomId, room);
-        //fffgg
 
         // 클라이언트에게 방 생성 완료 및 방 정보 전달 (여기선 간단히 출력 예시)
         client.getHandler().getOut.println("ROOM:CREATED:" + roomId);
         updateRoomListForAllClients();
-    };;;;;
+    }
 
     // 방 참가 메서드 (data -> roomId)
     public static synchronized String joinRoom(Player client, String roomId) {
@@ -77,7 +76,7 @@ public class RoomManager {
         room.setPlayerReady(client, ready); // 유저의 value 상태를 바꾼다.
         updateRoomInfo(room); //모든 유저의 상태를 대기방 접속자들에게 알림.
 
-        // 모든 유저가 준비됐는지 확인
+        // 모든 유저가 준비됐는지 확인 //////////////////////////////////
         if (room.allReady()) {
             client.getHandler().getOut().println("All players ready in room " + roomId + ". Starting game in 5 seconds...");
 
@@ -94,15 +93,13 @@ public class RoomManager {
         }
     }
 
-    // 방 목록을 모든 클라이언트에 갱신해줌
-    private static void updateRoomListForAllClients() {
+    // 대기방 목록을 보는 클라이언트에 갱신해줌
+    private static String updateRoomListForAllClients() {
         StringBuilder sb = new StringBuilder("ROOM:LIST:");
         for (Room room : rooms.values()) { // 존재하는 모든 room의 정보를 순차적으로 sb에 넣어서 저장.
             sb.append(room.getRoomId()).append(",").append(room.getCurrentPlayerCount()).append(",").append(room.getMaxPlayers()).append(";");
         }
-        String message = sb.toString();
-        // 서버에 접속한 모든 클라이언트에 보내는 코드 필요
-        Server.broadcastToAllClients(message);
+        return sb.toString();
     }
 
     // 특정 방의 정보를 대기방 참가자들에게 갱신

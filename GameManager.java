@@ -33,9 +33,7 @@ public class GameManager{
     }
 
     public String getShopInfo(String username) {
-        Player player = playerManager.getPlayer(username);
         // player의 돈, 구매한 아이템 정보 등을 활용해서 상점 구성
-        ...
         return shopInfo;
     }
 
